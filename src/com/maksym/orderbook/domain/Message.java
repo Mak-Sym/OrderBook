@@ -3,16 +3,16 @@ package com.maksym.orderbook.domain;
 import com.maksym.orderbook.Utils;
 
 public abstract class Message {
-    private long timestamp;
+    private String timestamp;
     private char messageType;
     private String orderId;
     private int size;
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -54,7 +54,7 @@ public abstract class Message {
             message.setMessageType('R');
             message.setSize(Integer.parseInt(parts[3]));
         }
-        message.setTimestamp(Long.parseLong(parts[0]));
+        message.setTimestamp(parts[0]);
         message.setOrderId(parts[2]);
         return message;
     }
