@@ -3,7 +3,6 @@ package com.maksym.test;
 import com.maksym.orderbook.domain.Message;
 
 import java.io.*;
-import java.util.Date;
 
 public class FileReaderModule {
     public static void main(String[] args) throws IOException {
@@ -43,13 +42,13 @@ public class FileReaderModule {
         FileInputStream fileInputStream = new FileInputStream(input);
         byte[] buffer = new byte[bufferSize];
 
-        long start = new Date().getTime();
-        int len = 0;
+        long start = System.currentTimeMillis();
+        int len;
         while((len = fileInputStream.read(buffer)) != -1){
             System.out.print(len);
             System.out.print("\r\n");
         }
-        long duration = new Date().getTime() - start;
+        long duration = System.currentTimeMillis() - start;
 
         fileInputStream.close();
         return duration;
@@ -59,9 +58,9 @@ public class FileReaderModule {
         FileReader fileReader = new FileReader(input);
         char[] buffer = new char[bufferSize];
 
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
         while(fileReader.read(buffer) != -1);
-        long duration = new Date().getTime() - start;
+        long duration = System.currentTimeMillis() - start;
         
         fileReader.close();
         return duration;
@@ -70,9 +69,9 @@ public class FileReaderModule {
     private static long read_3(File input, int bufferSize) throws IOException {
         FileReader fileReader = new FileReader(input);
         BufferedReader bufferedReader = bufferSize > 0 ? new BufferedReader(fileReader, bufferSize) : new BufferedReader(fileReader);
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
         while(bufferedReader.readLine() != null);
-        long duration = new Date().getTime() - start;
+        long duration = System.currentTimeMillis() - start;
 
         bufferedReader.close();
         fileReader.close();
@@ -83,12 +82,12 @@ public class FileReaderModule {
     private static long read_3_1(File input, int bufferSize) throws IOException {
         FileReader fileReader = new FileReader(input);
         BufferedReader bufferedReader = bufferSize > 0 ? new BufferedReader(fileReader, bufferSize) : new BufferedReader(fileReader);
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
         String line;
         while((line = bufferedReader.readLine()) != null){
             Message.createMessage(line);
         }
-        long duration = new Date().getTime() - start;
+        long duration = System.currentTimeMillis() - start;
 
         bufferedReader.close();
         fileReader.close();

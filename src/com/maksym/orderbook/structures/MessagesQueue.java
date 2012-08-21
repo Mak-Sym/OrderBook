@@ -6,6 +6,7 @@ public class MessagesQueue {
     private static final int DEFAULT_CAPACITY = 10000;
 
     private volatile long nextWritePosition;
+    private ReadWriteArbiter readWriteArbiter;
     private int capacity;
 
     private Message[] messages;
@@ -21,14 +22,23 @@ public class MessagesQueue {
         }
         this.capacity = capacity;
         this.messages = new Message[capacity];
+        readWriteArbiter = new ReadWriteArbiter(capacity);
     }
 
-    public Message getMessage(int index){
-        return this.messages[index];
+    public Message getMessage(long index){
+        readWriteArbiter.setLastReadPosition(index);
+        return this.messages[(int)(index % capacity)];
     }
 
     public void addMessage(Message message){
-        messages[(int)(nextWritePosition % capacity)] = message;
-        ++nextWritePosition;
+        messages[(int)(++nextWritePosition % capacity)] = message;
+    }
+
+    public int getCountOfFreeSlots(){
+        return readWriteArbiter.getNumberOfFreeSlots(nextWritePosition - 1);
+    }
+
+    public long getNextWritePosition(){
+        return nextWritePosition;
     }
 }
