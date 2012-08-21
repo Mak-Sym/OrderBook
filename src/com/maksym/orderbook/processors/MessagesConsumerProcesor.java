@@ -10,7 +10,7 @@ public class MessagesConsumerProcesor implements Runnable {
     private static final long DEFAULT_DELAY = 50;
 
     private MessagesQueue messagesQueue;
-    private long index = 0;
+    private static volatile long index = 0;
 
     public MessagesConsumerProcesor(MessagesQueue messagesQueue) {
         this.messagesQueue = messagesQueue;

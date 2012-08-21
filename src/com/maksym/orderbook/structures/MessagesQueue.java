@@ -25,20 +25,21 @@ public class MessagesQueue {
         readWriteArbiter = new ReadWriteArbiter(capacity);
     }
 
-    public Message getMessage(long index){
+    public synchronized Message getMessage(long index){
+        Message message = this.messages[(int)(index % capacity)];
         readWriteArbiter.setLastReadPosition(index);
-        return this.messages[(int)(index % capacity)];
+        return message;
     }
 
-    public void addMessage(Message message){
+    public synchronized void addMessage(Message message){
         messages[(int)(++nextWritePosition % capacity)] = message;
     }
 
-    public int getCountOfFreeSlots(){
+    public synchronized int getCountOfFreeSlots(){
         return readWriteArbiter.getNumberOfFreeSlots(nextWritePosition - 1);
     }
 
-    public long getNextWritePosition(){
+    public synchronized long getNextWritePosition(){
         return nextWritePosition;
     }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author mfedoryshyn
  */
 public class MessagesPopulatorProcessor implements Runnable {
-    private static final long DEFAULT_DELAY = 9000;
+    private static final long DEFAULT_DELAY = 10000;
 
     private MessagesQueue messagesQueue;
     private BufferedReader inputStreamReader;
