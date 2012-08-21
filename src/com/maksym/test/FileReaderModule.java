@@ -1,0 +1,98 @@
+package com.maksym.test;
+
+import com.maksym.orderbook.domain.Message;
+
+import java.io.*;
+import java.util.Date;
+
+public class FileReaderModule {
+    public static void main(String[] args) throws IOException {
+        File input = new File("D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\pricer.in");
+        System.out.println("FileInputStream:");
+//        System.out.println("duration (100): " + read_1(input, 100));
+//        System.out.println("duration (1000): " + read_1(input, 1000));
+//        System.out.println("duration (10000): " + read_1(input, 10000));
+        System.out.println("duration (100000): " + read_1(input, 100000));
+//        System.out.println("duration (1000000): " + read_1(input, 1000000));
+        
+        System.out.println("FileReader:");
+        System.out.println("duration (100): " + read_2(input, 100));
+        System.out.println("duration (1000): " + read_2(input, 1000));
+        System.out.println("duration (10000): " + read_2(input, 10000));
+        System.out.println("duration (100000): " + read_2(input, 100000));
+        System.out.println("duration (1000000): " + read_2(input, 1000000));
+
+        System.out.println("BufferedReader:");
+        System.out.println("duration (100): " + read_3(input, 100));
+        System.out.println("duration (1000): " + read_3(input, 1000));
+        System.out.println("duration (10000): " + read_3(input, 10000));
+        System.out.println("duration (100000): " + read_3(input, 100000));
+        System.out.println("duration (1000000): " + read_3(input, 1000000));
+        System.out.println("duration (default): " + read_3(input, 0));
+
+        System.out.println("BufferedReader with message creating:");
+        System.out.println("duration (100): " + read_3_1(input, 100));
+        System.out.println("duration (1000): " + read_3_1(input, 1000));
+        System.out.println("duration (10000): " + read_3_1(input, 10000));
+        System.out.println("duration (100000): " + read_3_1(input, 100000));
+        System.out.println("duration (1000000): " + read_3_1(input, 1000000));
+        System.out.println("duration (default): " + read_3_1(input, 0));
+    }
+
+    private static long read_1(File input, int bufferSize) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(input);
+        byte[] buffer = new byte[bufferSize];
+
+        long start = new Date().getTime();
+        int len = 0;
+        while((len = fileInputStream.read(buffer)) != -1){
+            System.out.print(len);
+            System.out.print("\r\n");
+        }
+        long duration = new Date().getTime() - start;
+
+        fileInputStream.close();
+        return duration;
+    }
+    
+    private static long read_2(File input, int bufferSize) throws IOException {
+        FileReader fileReader = new FileReader(input);
+        char[] buffer = new char[bufferSize];
+
+        long start = new Date().getTime();
+        while(fileReader.read(buffer) != -1);
+        long duration = new Date().getTime() - start;
+        
+        fileReader.close();
+        return duration;
+    }
+
+    private static long read_3(File input, int bufferSize) throws IOException {
+        FileReader fileReader = new FileReader(input);
+        BufferedReader bufferedReader = bufferSize > 0 ? new BufferedReader(fileReader, bufferSize) : new BufferedReader(fileReader);
+        long start = new Date().getTime();
+        while(bufferedReader.readLine() != null);
+        long duration = new Date().getTime() - start;
+
+        bufferedReader.close();
+        fileReader.close();
+
+        return duration;
+    }
+
+    private static long read_3_1(File input, int bufferSize) throws IOException {
+        FileReader fileReader = new FileReader(input);
+        BufferedReader bufferedReader = bufferSize > 0 ? new BufferedReader(fileReader, bufferSize) : new BufferedReader(fileReader);
+        long start = new Date().getTime();
+        String line;
+        while((line = bufferedReader.readLine()) != null){
+            Message.createMessage(line);
+        }
+        long duration = new Date().getTime() - start;
+
+        bufferedReader.close();
+        fileReader.close();
+
+        return duration;
+    }
+}
