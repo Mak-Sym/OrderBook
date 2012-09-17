@@ -44,10 +44,7 @@ public class FileReaderModule {
 
         long start = System.currentTimeMillis();
         int len;
-        while((len = fileInputStream.read(buffer)) != -1){
-            System.out.print(len);
-            System.out.print("\r\n");
-        }
+        while((len = fileInputStream.read(buffer)) != -1);
         long duration = System.currentTimeMillis() - start;
 
         fileInputStream.close();

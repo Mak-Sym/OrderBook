@@ -25,20 +25,37 @@ public class MessagesQueue {
         readWriteArbiter = new ReadWriteArbiter(capacity);
     }
 
+    /**
+     * returns message. Used by *consumer* thread
+     * @param index of the message
+     * @return message
+     */
     public synchronized Message getMessage(long index){
         Message message = this.messages[(int)(index % capacity)];
         readWriteArbiter.setLastReadPosition(index);
         return message;
     }
 
+    /**
+     * add message to queue. Used by *producer*
+     * @param message to be added
+     */
     public synchronized void addMessage(Message message){
         messages[(int)(++nextWritePosition % capacity)] = message;
     }
 
+    /**
+     * get number of free slots. Used by *producer*
+     * @return number of free slots
+     */
     public synchronized int getCountOfFreeSlots(){
         return readWriteArbiter.getNumberOfFreeSlots(nextWritePosition - 1);
     }
 
+    /**
+     * get next write position. Used by *consumer* to determine if there are unread messages.
+     * @return next write position.
+     */
     public synchronized long getNextWritePosition(){
         return nextWritePosition;
     }
