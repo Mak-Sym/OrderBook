@@ -1,4 +1,4 @@
-package com.maksym.orderbook.structures;
+package com.maksym.orderbook.queues.impl;
 
 /**
  * @author mfedoryshyn

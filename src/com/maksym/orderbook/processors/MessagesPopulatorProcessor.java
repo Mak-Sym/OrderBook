@@ -1,7 +1,7 @@
 package com.maksym.orderbook.processors;
 
 import com.maksym.orderbook.domain.Message;
-import com.maksym.orderbook.structures.MessagesQueue;
+import com.maksym.orderbook.queues.impl.MessagesQueue;
 import com.maksym.orderbook.utils.Logger;
 
 import java.io.BufferedReader;

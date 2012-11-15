@@ -1,6 +1,6 @@
 package com.maksym.orderbook.processors;
 
-import com.maksym.orderbook.structures.MessagesQueue;
+import com.maksym.orderbook.queues.impl.MessagesQueue;
 import com.maksym.orderbook.utils.Logger;
 
 /**
@@ -19,7 +19,7 @@ public class MessagesConsumerProcesor implements Runnable {
     public void doProcess() {
         while(true){
             if(index < messagesQueue.getNextWritePosition() - 1){
-                messagesQueue.getMessage(index++);
+                messagesQueue.getMessage();
                 try {Thread.sleep(10);}//imitation of computing
                 catch (InterruptedException ignored) {}
             } else {

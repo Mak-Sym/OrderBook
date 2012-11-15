@@ -3,7 +3,7 @@ package com.maksym.test;
 import com.maksym.orderbook.domain.AddOrderMessage;
 import com.maksym.orderbook.domain.Message;
 import com.maksym.orderbook.domain.ReduceOrderMessage;
-import com.maksym.orderbook.structures.MessagesQueue;
+import com.maksym.orderbook.queues.impl.MessagesQueue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -15,9 +15,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TestQueuesSpeed {
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("Test: BlockingQueue: " + test1());
-        System.out.println("Test: BlockingQueue: " + test1_1());
-        System.out.println("Test: BlockingQueue: " + test1_2());
+        System.out.println("Test: LinkedBlockingDeque: " + test1());
+        System.out.println("Test: ArrayBlockingQueue: " + test1_1());
+        System.out.println("Test: LinkedBlockingQueue: " + test1_2());
         System.out.println("Test: My Implementation: " + test2());
     }
 
@@ -138,7 +138,7 @@ class Consumer1 extends Thread {
     public void run() {
         for(int i = 0; i < 1000000; i++){
             if(index < queue.getNextWritePosition() - 1){
-                queue.getMessage(index++);
+                queue.getMessage();
             }
         }
     }
