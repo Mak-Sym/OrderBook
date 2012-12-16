@@ -1,12 +1,13 @@
 package com.maksym.orderbook.queues.impl;
 
-import com.maksym.orderbook.domain.Message;
 import com.maksym.orderbook.queues.IQueue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MessagesQueue implements IQueue {
+public class MessagesQueue<T> implements IQueue<T> {
 
     private volatile long nextWritePosition;
     private ReadWriteArbiter readWriteArbiter;
@@ -16,7 +17,8 @@ public class MessagesQueue implements IQueue {
     private Lock readLock;
     private Lock writeLock;
 
-    private Message[] messages;
+    private Object[] messages;
+    List<Object> l = new ArrayList<Object>();
 
     public MessagesQueue() {
         this(DEFAULT_CAPACITY);
@@ -28,7 +30,7 @@ public class MessagesQueue implements IQueue {
             throw new IllegalArgumentException("capacity is less than 1");
         }
         this.capacity = capacity;
-        this.messages = new Message[capacity];
+        this.messages = new Object[capacity];
         readWriteArbiter = new ReadWriteArbiter(capacity);
 
         this.readLock = new ReentrantLock();
@@ -40,8 +42,15 @@ public class MessagesQueue implements IQueue {
      * @return message
      */
     @Override
-    public Message getMessage(){
-        return getMessage(index++);
+    public T getMessage(){
+        readLock.lock();
+        T message;
+        try {
+            message =  getMessage(index++);
+        } finally {
+            readLock.unlock();
+        }
+        return message;
     }
 
     /**
@@ -49,15 +58,10 @@ public class MessagesQueue implements IQueue {
      * @param index of the message
      * @return message
      */
-    protected Message getMessage(long index){
-        readLock.lock();
-        Message message;
-        try {
-            message = this.messages[(int)(index % capacity)];
-            readWriteArbiter.setLastReadPosition(index);
-        } finally {
-            readLock.unlock();
-        }
+    protected T getMessage(long index){
+        T message;
+        message = (T)this.messages[(int)(index % capacity)];
+        readWriteArbiter.setLastReadPosition(index);
         return message;
     }
 
@@ -66,13 +70,23 @@ public class MessagesQueue implements IQueue {
      * @param message to be added
      */
     @Override
-    public void addMessage(Message message){
+    public void addMessage(T message){
         writeLock.lock();
         try {
             messages[(int)(++nextWritePosition % capacity)] = message;
         } finally {
             writeLock.unlock();
         }
+    }
+
+    @Override
+    public boolean isFull() {
+        return this.getCountOfFreeSlots() < 1;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.getCountOfFreeSlots() == messages.length;
     }
 
     /**

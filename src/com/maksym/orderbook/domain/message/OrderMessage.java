@@ -1,6 +1,8 @@
-package com.maksym.orderbook.domain;
+package com.maksym.orderbook.domain.message;
 
-public abstract class Message {
+import java.math.BigDecimal;
+
+public abstract class OrderMessage {
     private String timestamp;
     private char messageType;
     private String orderId;
@@ -38,22 +40,22 @@ public abstract class Message {
         this.size = size;
     }
 
-    public static Message createMessage(String line){
+    public static OrderMessage createMessage(String line){
         String[] parts = line.split(" ");
-        Message message;
+        OrderMessage orderMessage;
         if("A".equals(parts[1])){
-            message = new AddOrderMessage();
-            message.setMessageType('A');
-            ((AddOrderMessage)message).setSide(parts[3].charAt(0));
-            ((AddOrderMessage)message).setPrice(Double.parseDouble(parts[4]));
-            message.setSize(Integer.parseInt(parts[5]));
+            orderMessage = new AddOrderMessage();
+            orderMessage.setMessageType('A');
+            ((AddOrderMessage) orderMessage).setSide(parts[3].charAt(0));
+            ((AddOrderMessage) orderMessage).setPrice(new BigDecimal(parts[4]));
+            orderMessage.setSize(Integer.parseInt(parts[5]));
         } else {
-            message = new ReduceOrderMessage();
-            message.setMessageType('R');
-            message.setSize(Integer.parseInt(parts[3]));
+            orderMessage = new ReduceOrderMessage();
+            orderMessage.setMessageType('R');
+            orderMessage.setSize(Integer.parseInt(parts[3]));
         }
-        message.setTimestamp(parts[0]);
-        message.setOrderId(parts[2]);
-        return message;
+        orderMessage.setTimestamp(parts[0]);
+        orderMessage.setOrderId(parts[2]);
+        return orderMessage;
     }
 }

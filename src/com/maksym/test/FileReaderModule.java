@@ -1,6 +1,6 @@
 package com.maksym.test;
 
-import com.maksym.orderbook.domain.Message;
+import com.maksym.orderbook.domain.message.OrderMessage;
 
 import java.io.*;
 
@@ -82,7 +82,7 @@ public class FileReaderModule {
         long start = System.currentTimeMillis();
         String line;
         while((line = bufferedReader.readLine()) != null){
-            Message.createMessage(line);
+            OrderMessage.createMessage(line);
         }
         long duration = System.currentTimeMillis() - start;
 

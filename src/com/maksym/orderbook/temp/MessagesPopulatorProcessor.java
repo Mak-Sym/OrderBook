@@ -1,6 +1,6 @@
-package com.maksym.orderbook.processors;
+package com.maksym.orderbook.temp;
 
-import com.maksym.orderbook.domain.Message;
+import com.maksym.orderbook.domain.message.OrderMessage;
 import com.maksym.orderbook.queues.impl.MessagesQueue;
 import com.maksym.orderbook.utils.Logger;
 
@@ -37,7 +37,7 @@ public class MessagesPopulatorProcessor implements Runnable {
                         inputStreamReader.close();
                         return;
                     }
-                    messagesQueue.addMessage(Message.createMessage(line));
+                    messagesQueue.addMessage(OrderMessage.createMessage(line));
                 }
             }
         }

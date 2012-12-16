@@ -1,7 +1,7 @@
 package com.maksym.orderbook;
 
-import com.maksym.orderbook.processors.MessagesConsumerProcesor;
-import com.maksym.orderbook.processors.MessagesPopulatorProcessor;
+import com.maksym.orderbook.temp.MessagesConsumerProcesor;
+import com.maksym.orderbook.temp.MessagesPopulatorProcessor;
 import com.maksym.orderbook.queues.impl.MessagesQueue;
 
 import java.io.FileNotFoundException;

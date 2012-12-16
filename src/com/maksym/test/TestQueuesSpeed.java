@@ -1,8 +1,8 @@
 package com.maksym.test;
 
-import com.maksym.orderbook.domain.AddOrderMessage;
-import com.maksym.orderbook.domain.Message;
-import com.maksym.orderbook.domain.ReduceOrderMessage;
+import com.maksym.orderbook.domain.message.AddOrderMessage;
+import com.maksym.orderbook.domain.message.OrderMessage;
+import com.maksym.orderbook.domain.message.ReduceOrderMessage;
 import com.maksym.orderbook.queues.impl.MessagesQueue;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -22,7 +22,7 @@ public class TestQueuesSpeed {
     }
 
     private static long test1() throws InterruptedException {
-        BlockingQueue<Message> queue = new LinkedBlockingDeque<Message>(10000);
+        BlockingQueue<OrderMessage> queue = new LinkedBlockingDeque<OrderMessage>(10000);
         Producer producer = new Producer(queue);
         Consumer consumer = new Consumer(queue);
         long start = System.currentTimeMillis();
@@ -35,7 +35,7 @@ public class TestQueuesSpeed {
     }
 
     private static long test1_1() throws InterruptedException {
-        BlockingQueue<Message> queue = new ArrayBlockingQueue<Message>(10000);
+        BlockingQueue<OrderMessage> queue = new ArrayBlockingQueue<OrderMessage>(10000);
         Producer producer = new Producer(queue);
         Consumer consumer = new Consumer(queue);
         long start = System.currentTimeMillis();
@@ -48,7 +48,7 @@ public class TestQueuesSpeed {
     }
 
     private static long test1_2() throws InterruptedException {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>(10000);
+        BlockingQueue<OrderMessage> queue = new LinkedBlockingQueue<OrderMessage>(10000);
         Producer producer = new Producer(queue);
         Consumer consumer = new Consumer(queue);
         long start = System.currentTimeMillis();
@@ -75,9 +75,9 @@ public class TestQueuesSpeed {
 }
 
 class Producer extends Thread {
-    private BlockingQueue<Message> queue;
+    private BlockingQueue<OrderMessage> queue;
 
-    Producer(BlockingQueue<Message> queue) {
+    Producer(BlockingQueue<OrderMessage> queue) {
         this.queue = queue;
     }
 
@@ -93,16 +93,16 @@ class Producer extends Thread {
 }
 
 class Consumer extends Thread {
-    private BlockingQueue<Message> queue;
+    private BlockingQueue<OrderMessage> queue;
 
-    Consumer(BlockingQueue<Message> queue) {
+    Consumer(BlockingQueue<OrderMessage> queue) {
         this.queue = queue;
     }
 
     public void run() {
         for(int i = 0; i < 1000000; i++){
             try {
-                Message message = queue.take();
+                OrderMessage orderMessage = queue.take();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
