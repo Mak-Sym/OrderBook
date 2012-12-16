@@ -1,4 +1,4 @@
-package com.maksym.orderbook;
+package com.maksym.orderbook.processors;
 
 import com.maksym.orderbook.domain.ask.Ask;
 import com.maksym.orderbook.domain.ask.Asks;
@@ -9,13 +9,14 @@ import com.maksym.orderbook.domain.message.OrderMessage;
 import com.maksym.orderbook.domain.message.PrintMessage;
 import com.maksym.orderbook.queues.IQueue;
 import com.maksym.orderbook.utils.FlowController;
+import com.maksym.orderbook.utils.Logger;
 
 import java.math.BigDecimal;
 
 /**
  * @author mfedoryshyn
  */
-public class OrderBook {
+public class OrdersBookProcessor implements Runnable {
     private Bids bids;
     private Asks asks;
     private IQueue<OrderMessage> inputQueue;
@@ -24,12 +25,21 @@ public class OrderBook {
     private int level;
 
 
-    public OrderBook(IQueue<OrderMessage> inputQueue, IQueue<PrintMessage> outputQueue,
-                     FlowController flowController, int level) {
+    public OrdersBookProcessor(IQueue<OrderMessage> inputQueue, IQueue<PrintMessage> outputQueue,
+                               FlowController flowController, int level) {
         this.inputQueue = inputQueue;
         this.outputQueue = outputQueue;
         this.flowController = flowController;
         this.level = level;
+    }
+
+    @Override
+    public void run() {
+        try {
+            doProcess();
+        } catch (Exception e) {
+            Logger.error("Error invoking doProcess", OrdersBookProcessor.class, e);
+        }
     }
 
     public void doProcess() throws Exception {

@@ -36,4 +36,9 @@ public class PrintMessage {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+    @Override
+    public String toString() {
+        return timestamp + ' ' + action + ' ' + (total == null ? "N/A" : total);
+    }
 }
