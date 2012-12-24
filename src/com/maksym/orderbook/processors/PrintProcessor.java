@@ -29,11 +29,14 @@ public class PrintProcessor implements Runnable {
     }
 
     public void doProcess() throws Exception {
-        while (!flowController.orderBookComplete){
-            if(queue.isEmpty()){
-                try { Thread.sleep(10);}
-                catch (InterruptedException ignored) {}
-                continue;
+        while (true){
+            while(queue.isEmpty()){
+                if(flowController.orderBookComplete){
+                    return; //we're done
+                } else {
+                    try { Thread.sleep(10);}
+                    catch (InterruptedException ignored) {}
+                }
             }
             print(queue.getMessage());
         }

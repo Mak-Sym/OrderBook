@@ -21,4 +21,12 @@ public class AddOrderMessage extends OrderMessage {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "AddOrderMessage{" +
+               "side=" + side +
+               ", price=" + price +
+               '}' + super.toString();
+    }
 }

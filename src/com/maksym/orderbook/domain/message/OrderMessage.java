@@ -3,10 +3,10 @@ package com.maksym.orderbook.domain.message;
 import java.math.BigDecimal;
 
 public abstract class OrderMessage {
-    private String timestamp;
-    private char messageType;
-    private String orderId;
-    private int size;
+    protected String timestamp;
+    protected char messageType;
+    protected String orderId;
+    protected int size;
 
     public String getTimestamp() {
         return timestamp;
@@ -57,5 +57,15 @@ public abstract class OrderMessage {
         orderMessage.setTimestamp(parts[0]);
         orderMessage.setOrderId(parts[2]);
         return orderMessage;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderMessage{" +
+               "timestamp='" + timestamp + '\'' +
+               ", messageType=" + messageType +
+               ", orderId='" + orderId + '\'' +
+               ", size=" + size +
+               '}';
     }
 }

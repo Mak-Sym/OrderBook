@@ -23,6 +23,8 @@ public class OrdersBookProcessor implements Runnable {
     private IQueue<PrintMessage> outputQueue;
     private FlowController flowController;
     private int level;
+    private boolean isPrevAsksStatusNA = true;
+    private boolean isPrevBidssStatusNA = true;
 
 
     public OrdersBookProcessor(IQueue<OrderMessage> inputQueue, IQueue<PrintMessage> outputQueue,
@@ -31,6 +33,8 @@ public class OrdersBookProcessor implements Runnable {
         this.outputQueue = outputQueue;
         this.flowController = flowController;
         this.level = level;
+        this.asks = new Asks();
+        this.bids = new Bids();
     }
 
     @Override
@@ -44,7 +48,7 @@ public class OrdersBookProcessor implements Runnable {
 
     public void doProcess() throws Exception {
         OrderMessage orderMessage;
-        while(!flowController.readComplete){
+        while(true){
             while(inputQueue.isEmpty()){
                 if(!flowController.readComplete){
                     try { Thread.sleep(10);}
@@ -56,7 +60,9 @@ public class OrdersBookProcessor implements Runnable {
             }
             orderMessage = inputQueue.getMessage();
             PrintMessage printMessage = updateBidsAndAsks(orderMessage);
-            outputQueue.addMessage(printMessage);
+            if(printMessage != null){
+                outputQueue.addMessage(printMessage);
+            }
         }
     }
 
@@ -82,7 +88,7 @@ public class OrdersBookProcessor implements Runnable {
     }
 
     private PrintMessage processAsks(PrintMessage printMessage) {
-        printMessage.setAction('S');
+        printMessage.setAction('B');
         if(asks.getTotalCount() >= level){
             BigDecimal total = new BigDecimal(0L);
             int offersLeft = level;
@@ -93,11 +99,12 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
+        System.out.println(asks.debugOutput());
         return printMessage;
     }
 
     private PrintMessage processBids(PrintMessage printMessage) {
-        printMessage.setAction('B');
+        printMessage.setAction('S');
         if(bids.getTotalCount() >= level){
             BigDecimal total = new BigDecimal(0L);
             int offersLeft = level;
@@ -108,6 +115,7 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
+        System.out.println(bids.debugOutput());
         return printMessage;
     }
 }

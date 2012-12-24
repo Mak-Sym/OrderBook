@@ -20,7 +20,8 @@ public class Bids implements OrdersOperations {
     private Comparator<Bid> sortByPriceComparator = new Comparator<Bid>() {
         @Override
         public int compare(Bid o1, Bid o2) {
-            return 0;  //todo: change body of implemented methods use File | Settings | File Templates.
+            int result =  o2.getPrice().compareTo(o1.getPrice());
+            return result == 0 ? (o1.getSize() - o2.getSize()) : result;
         }
     };
 
@@ -34,9 +35,11 @@ public class Bids implements OrdersOperations {
             throw new IllegalArgumentException("Wrong message type!");
         }
         Bid bid = OrderBookHelper.convertToBid(message);
+        System.out.println("Adding BID: " + bid.getOrderId());
         bidsByPrice.add(bid);
         ordersFetcher.addOrder(bid);
         count += message.getSize();
+        System.out.println("count of BIDs " + count);
     }
 
     @Override
@@ -45,6 +48,7 @@ public class Bids implements OrdersOperations {
             throw new IllegalArgumentException("Wrong message type!");
         }
         Bid bid = OrderBookHelper.convertToBid(message);
+        System.out.println("Trying to reduce bids for BID: " + bid.getOrderId());
         Bid existentBid = ordersFetcher.getOrder(bid);
         if(existentBid != null){
             if(bid.getSize() >= existentBid.getSize()){
@@ -55,8 +59,10 @@ public class Bids implements OrdersOperations {
                 existentBid.setSize(existentBid.getSize() - bid.getSize());
                 count -= bid.getSize();
             }
+            System.out.println("BID " + bid.getOrderId() + " FOUND! Count of bids: " + count);
             return true;
         }
+        System.out.println("BID " + bid.getOrderId() + " NOT FOUND");
         return false;
     }
 
@@ -67,5 +73,14 @@ public class Bids implements OrdersOperations {
 
     public Collection<Bid> getBids(){
         return bidsByPrice;
+    }
+
+    public String debugOutput(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("BIDS: ");
+        for(Bid bid: bidsByPrice) {
+            sb.append(bid.getOrderId()).append(" -> ").append(bid.getPrice()).append(" -> ").append(bid.getSize()).append(";   ");
+        }
+        return sb.toString();
     }
 }

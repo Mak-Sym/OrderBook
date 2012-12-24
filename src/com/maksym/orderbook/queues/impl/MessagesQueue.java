@@ -2,8 +2,6 @@ package com.maksym.orderbook.queues.impl;
 
 import com.maksym.orderbook.queues.IQueue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,7 +16,6 @@ public class MessagesQueue<T> implements IQueue<T> {
     private Lock writeLock;
 
     private Object[] messages;
-    List<Object> l = new ArrayList<Object>();
 
     public MessagesQueue() {
         this(DEFAULT_CAPACITY);
@@ -46,7 +43,8 @@ public class MessagesQueue<T> implements IQueue<T> {
         readLock.lock();
         T message;
         try {
-            message =  getMessage(index++);
+            message = getMessage(index);
+            ++index;
         } finally {
             readLock.unlock();
         }
@@ -59,8 +57,10 @@ public class MessagesQueue<T> implements IQueue<T> {
      * @return message
      */
     protected T getMessage(long index){
+//        System.out.println(Thread.currentThread().getName() + ": reading element " + (int)(index % capacity));
         T message;
         message = (T)this.messages[(int)(index % capacity)];
+//        System.out.println(Thread.currentThread().getName() + ": read element: " + message);
         readWriteArbiter.setLastReadPosition(index);
         return message;
     }
@@ -73,7 +73,9 @@ public class MessagesQueue<T> implements IQueue<T> {
     public void addMessage(T message){
         writeLock.lock();
         try {
-            messages[(int)(++nextWritePosition % capacity)] = message;
+            messages[(int)(nextWritePosition % capacity)] = message;
+//            System.out.println(Thread.currentThread().getName() + ": added element to position " + (int)(nextWritePosition % capacity));
+            ++nextWritePosition;
         } finally {
             writeLock.unlock();
         }
@@ -86,7 +88,11 @@ public class MessagesQueue<T> implements IQueue<T> {
 
     @Override
     public boolean isEmpty() {
-        return this.getCountOfFreeSlots() == messages.length;
+        /*System.out.println("Thread: " + Thread.currentThread().getName());
+        System.out.println("isEmpty: " + (this.getCountOfFreeSlots() >= messages.length));
+        System.out.println("this.getCountOfFreeSlots(): " + this.getCountOfFreeSlots());
+        System.out.println("messages.length: " + messages.length);*/
+        return this.getCountOfFreeSlots() >= messages.length;
     }
 
     /**
