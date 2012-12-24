@@ -35,11 +35,9 @@ public class Asks  implements OrdersOperations {
             throw new IllegalArgumentException("Wrong message type!");
         }
         Ask ask = OrderBookHelper.convertToAsk(message);
-        System.out.println("Adding ASK: " + ask.getOrderId());
         asksByPrice.add(ask);
         ordersFetcher.addOrder(ask);
         count += message.getSize();
-        System.out.println("count of ASKs " + count);
     }
 
     @Override
@@ -48,7 +46,6 @@ public class Asks  implements OrdersOperations {
             throw new IllegalArgumentException("Wrong message type!");
         }
         Ask ask = OrderBookHelper.convertToAsk(message);
-        System.out.println("Trying to reduce asks for ASK: " + ask.getOrderId());
         Ask existentAsk = ordersFetcher.getOrder(ask);
         if(existentAsk != null){
             if(ask.getSize() >= existentAsk.getSize()){
@@ -59,10 +56,8 @@ public class Asks  implements OrdersOperations {
                 existentAsk.setSize(existentAsk.getSize() - ask.getSize());
                 count -= message.getSize();
             }
-            System.out.println("ASK " + ask.getOrderId() + " FOUND! Count of asks: " + count);
             return true;
         }
-        System.out.println("ASK " + ask.getOrderId() + " NOT FOUND");
         return false;
     }
 
@@ -73,14 +68,5 @@ public class Asks  implements OrdersOperations {
 
     public Collection<Ask> getAsks(){
         return asksByPrice;
-    }
-
-    public String debugOutput(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("ASKS: ");
-        for(Ask ask: asksByPrice) {
-            sb.append(ask.getOrderId()).append(" -> ").append(ask.getPrice()).append(" -> ").append(ask.getSize()).append(";   ");
-        }
-        return sb.toString();
     }
 }

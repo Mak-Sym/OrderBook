@@ -99,7 +99,6 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
-        System.out.println(asks.debugOutput());
         return printMessage;
     }
 
@@ -115,7 +114,6 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
-        System.out.println(bids.debugOutput());
         return printMessage;
     }
 }

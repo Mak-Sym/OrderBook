@@ -57,10 +57,8 @@ public class MessagesQueue<T> implements IQueue<T> {
      * @return message
      */
     protected T getMessage(long index){
-//        System.out.println(Thread.currentThread().getName() + ": reading element " + (int)(index % capacity));
         T message;
         message = (T)this.messages[(int)(index % capacity)];
-//        System.out.println(Thread.currentThread().getName() + ": read element: " + message);
         readWriteArbiter.setLastReadPosition(index);
         return message;
     }
@@ -74,7 +72,6 @@ public class MessagesQueue<T> implements IQueue<T> {
         writeLock.lock();
         try {
             messages[(int)(nextWritePosition % capacity)] = message;
-//            System.out.println(Thread.currentThread().getName() + ": added element to position " + (int)(nextWritePosition % capacity));
             ++nextWritePosition;
         } finally {
             writeLock.unlock();
@@ -88,10 +85,6 @@ public class MessagesQueue<T> implements IQueue<T> {
 
     @Override
     public boolean isEmpty() {
-        /*System.out.println("Thread: " + Thread.currentThread().getName());
-        System.out.println("isEmpty: " + (this.getCountOfFreeSlots() >= messages.length));
-        System.out.println("this.getCountOfFreeSlots(): " + this.getCountOfFreeSlots());
-        System.out.println("messages.length: " + messages.length);*/
         return this.getCountOfFreeSlots() >= messages.length;
     }
 
