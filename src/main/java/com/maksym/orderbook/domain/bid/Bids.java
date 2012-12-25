@@ -21,7 +21,7 @@ public class Bids implements OrdersOperations {
         @Override
         public int compare(Bid o1, Bid o2) {
             int result =  o2.getPrice().compareTo(o1.getPrice());
-            return result == 0 ? (o2.getSize() - o1.getSize()) : result;
+            return result == 0 ? (o2.getOrderId().compareTo(o1.getOrderId())) : result;
         }
     };
 

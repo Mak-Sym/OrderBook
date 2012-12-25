@@ -21,7 +21,7 @@ public class Asks  implements OrdersOperations {
         @Override
         public int compare(Ask o1, Ask o2) {
             int result = o1.getPrice().compareTo(o2.getPrice());
-            return result == 0 ? (o1.getSize() - o2.getSize()) : result;
+            return result == 0 ? (o1.getOrderId().compareTo(o2.getOrderId())) : result;
         }
     };
 
