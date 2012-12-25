@@ -1,4 +1,4 @@
-package com.maksym.test;
+package com.maksym.orderbook.test;
 
 import com.maksym.orderbook.domain.message.OrderMessage;
 

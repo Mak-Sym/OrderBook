@@ -15,7 +15,7 @@ import java.io.Reader;
 /**
  * @author mfedoryshyn
  */
-public class Main {
+public class App {
     private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\pricer.in";
 //    private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\test.in";
 
@@ -36,12 +36,12 @@ public class Main {
     }*/
 
     public static void main(String[] args) throws Exception {
-        /*if(args.length != 1){
+        if(args.length != 1){
             System.out.println("Invalid argument");
             return;
         }
-        int level = Integer.parseInt(args[0]);*/
-        int level = 200;
+        int level = Integer.parseInt(args[0]);
+//        int level = 200;
 
         Reader reader = new FileReader(FILENAME);
 
@@ -65,9 +65,7 @@ public class Main {
         printerThread.start();
 
         readerThread.join();
-//        System.out.println("\n\nreaderThread completed");
         processorThread.join();
-//        System.out.println("\n\nprocessorThread completed");
         printerThread.join();
         long duration = System.currentTimeMillis() - start;
         System.out.println("\n\nDURATION: " + duration);

@@ -1,7 +1,5 @@
-package com.maksym.test.orderbook.domain.ask;
+package com.maksym.orderbook.domain.ask;
 
-import com.maksym.orderbook.domain.ask.Ask;
-import com.maksym.orderbook.domain.ask.Asks;
 import com.maksym.orderbook.domain.message.AddOrderMessage;
 import org.junit.Test;
 
