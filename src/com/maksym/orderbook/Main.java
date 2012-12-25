@@ -36,12 +36,12 @@ public class Main {
     }*/
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 1){
+        /*if(args.length != 1){
             System.out.println("Invalid argument");
             return;
         }
-        int level = Integer.parseInt(args[0]);
-//        int level = 200;
+        int level = Integer.parseInt(args[0]);*/
+        int level = 200;
 
         Reader reader = new FileReader(FILENAME);
 
