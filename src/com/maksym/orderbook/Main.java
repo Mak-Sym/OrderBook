@@ -16,8 +16,8 @@ import java.io.Reader;
  * @author mfedoryshyn
  */
 public class Main {
-//    private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\pricer.in";
-    private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\test.in";
+    private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\pricer.in";
+//    private static final String FILENAME = "D:\\Projects\\Education\\OredrBook_TestTask\\test_data\\test.in";
 
     /*public static void main(String[] args) throws FileNotFoundException {
         MessagesQueue messagesQueue = new MessagesQueue(10000);
@@ -36,12 +36,12 @@ public class Main {
     }*/
 
     public static void main(String[] args) throws Exception {
-        /*if(args.length != 1){
+        if(args.length != 1){
             System.out.println("Invalid argument");
             return;
         }
-        int level = Integer.parseInt(args[0]);*/
-        int level = 200;
+        int level = Integer.parseInt(args[0]);
+//        int level = 200;
 
         Reader reader = new FileReader(FILENAME);
 

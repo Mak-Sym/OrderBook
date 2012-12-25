@@ -23,8 +23,8 @@ public class OrdersBookProcessor implements Runnable {
     private IQueue<PrintMessage> outputQueue;
     private FlowController flowController;
     private int level;
-    private boolean isPrevAsksStatusNA = true;
-    private boolean isPrevBidssStatusNA = true;
+    private BigDecimal lastAsksPrice = null;
+    private BigDecimal lastBidsPrice = null;
 
 
     public OrdersBookProcessor(IQueue<OrderMessage> inputQueue, IQueue<PrintMessage> outputQueue,
@@ -71,17 +71,17 @@ public class OrdersBookProcessor implements Runnable {
         printMessage.setTimestamp(orderMessage.getTimestamp());
         if(orderMessage.getMessageType() == 'R'){
             if(bids.reduce(orderMessage)){
-                processBids(printMessage);
+                printMessage = processBids(printMessage);
             } else if(asks.reduce(orderMessage)){
-                processAsks(printMessage);
+                printMessage = processAsks(printMessage);
             }
         } else if (orderMessage instanceof AddOrderMessage){
             if(((AddOrderMessage)orderMessage).getSide() == 'S'){
                 asks.add(orderMessage);
-                processAsks(printMessage);
+                printMessage = processAsks(printMessage);
             } else {
                 bids.add(orderMessage);
-                processBids(printMessage);
+                printMessage = processBids(printMessage);
             }
         }
         return printMessage;
@@ -89,8 +89,9 @@ public class OrdersBookProcessor implements Runnable {
 
     private PrintMessage processAsks(PrintMessage printMessage) {
         printMessage.setAction('B');
+        BigDecimal total = null;
         if(asks.getTotalCount() >= level){
-            BigDecimal total = new BigDecimal(0L);
+            total = new BigDecimal(0L);
             int offersLeft = level;
             for(Ask ask: asks.getAsks()){
                 int num = Math.min(offersLeft, ask.getSize());
@@ -99,13 +100,19 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
+        if((lastAsksPrice == null && total == null)
+           || (lastAsksPrice != null && total != null && total.equals(lastAsksPrice))){
+            printMessage = null;
+        }
+        lastAsksPrice = total;
         return printMessage;
     }
 
     private PrintMessage processBids(PrintMessage printMessage) {
         printMessage.setAction('S');
+        BigDecimal total = null;
         if(bids.getTotalCount() >= level){
-            BigDecimal total = new BigDecimal(0L);
+            total = new BigDecimal(0L);
             int offersLeft = level;
             for(Bid bid: bids.getBids()){
                 int num = Math.min(offersLeft, bid.getSize());
@@ -114,6 +121,11 @@ public class OrdersBookProcessor implements Runnable {
             }
             printMessage.setTotal(total);
         }
+        if((lastBidsPrice == null && total == null)
+           || (lastBidsPrice != null && total != null && total.equals(lastBidsPrice))){
+            printMessage = null;
+        }
+        lastBidsPrice = total;
         return printMessage;
     }
 }

@@ -39,6 +39,6 @@ public class PrintMessage {
 
     @Override
     public String toString() {
-        return timestamp + ' ' + action + ' ' + (total == null ? "N/A" : total);
+        return timestamp + ' ' + action + ' ' + (total == null ? "NA" : total);
     }
 }
